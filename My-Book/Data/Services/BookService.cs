@@ -17,16 +17,53 @@ namespace My_Book.Data.Services
         }
 
 
-        public async Task<IQueryable<Book>> GetAllBook()
+        //public async Task<IQueryable<Book>> GetAllBook()
+        //{
+        //    var allBookList = await _context.Books.ToListAsync();
+        //    var allIquerable = allBookList.AsQueryable();
+        //    return allIquerable;
+        //}
+        public async Task<IQueryable<BookWithAuthorDTO>> GetAllBook()
         {
-            var allBookList = await _context.Books.ToListAsync();
+            var allBookList = await _context.Books.Select(book => new BookWithAuthorDTO
+            {
+                Title = book.Title,
+                Description = book.Description,
+                IsRead = book.IsRead,
+                DateRead = book.IsRead ? book.DateRead.Value : null,
+                Rate = book.IsRead ? book.Rate.Value : null,
+                Genre = book.Genre,
+                CoverUrl = book.CoverUrl,
+                Publisher = book.Publisher.Name,
+                AuthorName = book.Book_Authors.Select(x => x.Author.FullName).ToList(),
+            }).ToListAsync();
             var allIquerable = allBookList.AsQueryable();
-            return allIquerable;
+            return (IQueryable<BookWithAuthorDTO>)allIquerable;
         }
 
 
+
+
         // if use FirstAsync method it will return exception However FirstOrDefaultAsync will return null if Book object is not found.
-        public async Task<Book?> GetOneBook(int Id) => await _context.Books.FirstOrDefaultAsync(x => x.Id == Id);
+        //  public async Task<Book?> GetOneBook(int Id) => await _context.Books.FirstOrDefaultAsync(x => x.Id == Id);
+
+        public async Task<BookWithAuthorDTO?> GetOneBook(int Id)
+        {
+            var _bookWithAuthorDTO = await _context.Books.Where(x => x.Id == Id).Select(book => new BookWithAuthorDTO
+            {
+                Title = book.Title,
+                Description = book.Description,
+                IsRead = book.IsRead,
+                DateRead = book.IsRead ? book.DateRead.Value : null,
+                Rate = book.IsRead ? book.Rate.Value : null,
+                Genre = book.Genre,
+                CoverUrl = book.CoverUrl,
+                Publisher = book.Publisher.Name,
+                AuthorName = book.Book_Authors.Select(x => x.Author.FullName).ToList(),
+            }).FirstOrDefaultAsync();
+
+            return _bookWithAuthorDTO;
+        }
         public async Task<Book> AddBook(BookDTO bookDTO)
         {
             var _book = new Book()

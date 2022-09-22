@@ -9,14 +9,10 @@ namespace My_Book.Data.Model
     /// </summary>
     public class Publisher
     {
-
         public int Id { get; set; } 
-
         public string Name { get; set; }
 
         //navigtion property
-
-      
         public virtual List<Book> Books { get; set; }
     }
 }
