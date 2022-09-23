@@ -27,6 +27,7 @@ namespace My_Book.Data.Services
         {
             var allBookList = await _context.Books.Select(book => new BookWithAuthorDTO
             {
+                Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
                 IsRead = book.IsRead,
@@ -41,9 +42,6 @@ namespace My_Book.Data.Services
             return (IQueryable<BookWithAuthorDTO>)allIquerable;
         }
 
-
-
-
         // if use FirstAsync method it will return exception However FirstOrDefaultAsync will return null if Book object is not found.
         //  public async Task<Book?> GetOneBook(int Id) => await _context.Books.FirstOrDefaultAsync(x => x.Id == Id);
 
@@ -51,6 +49,7 @@ namespace My_Book.Data.Services
         {
             var _bookWithAuthorDTO = await _context.Books.Where(x => x.Id == Id).Select(book => new BookWithAuthorDTO
             {
+                Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
                 IsRead = book.IsRead,

@@ -25,5 +25,17 @@ namespace My_Book.Controllers
             return Ok(_publisher);
         }
 
+
+        [HttpGet("Get-PublisherBookAndAuthor/{publisherId}")]
+        public async Task<ActionResult> GetAuthorWithBooks(int publisherId)
+        {
+            var _publisher = await _service.GetPublisherWithBookAndAuthor(publisherId);
+            if (_publisher == null)
+            {
+                return BadRequest("Cannot found Publisher with ID");
+            }
+            return Ok(_publisher);
+        }
+
     }
 }
